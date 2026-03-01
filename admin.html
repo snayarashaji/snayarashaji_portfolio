@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | Snayara Portfolio</title>
+    <meta name="description" content="Admin dashboard for managing Snayara's portfolio.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+    <script>
+        if (!localStorage.getItem('adminToken')) {
+            window.location.href = '/login';
+        }
+    </script>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>&lt;Admin /&gt;</h2>
+            <a href="index.html" class="back-link">← Back to Site</a>
+        </div>
+        <nav class="sidebar-nav">
+            <button class="nav-item active" data-tab="dashboard" id="nav-dashboard">
+                <span class="nav-icon">📊</span> Dashboard
+            </button>
+            <button class="nav-item" data-tab="projects" id="nav-projects">
+                <span class="nav-icon">🚀</span> Projects
+            </button>
+            <button class="nav-item" data-tab="skills" id="nav-skills">
+                <span class="nav-icon">⚡</span> Skills
+            </button>
+            <button class="nav-item" data-tab="education" id="nav-education">
+                <span class="nav-icon">🎓</span> Education
+            </button>
+            <button class="nav-item" data-tab="messages" id="nav-messages">
+                <span class="nav-icon">✉️</span> Messages
+                <span class="badge" id="msgBadge" style="display:none;">0</span>
+            </button>
+            <div class="sidebar-footer">
+                <button class="nav-item logout-btn" id="logoutBtn">
+                    <span class="nav-icon">🚪</span> Logout
+                </button>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <button class="hamburger" id="hamburgerBtn">☰</button>
+        <h2>&lt;Admin /&gt;</h2>
+        <a href="index.html" class="back-link-mobile">← Site</a>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Dashboard Tab -->
+        <div class="tab-content active" id="tab-dashboard">
+            <h1 class="page-title">Dashboard</h1>
+            <div class="stats-grid">
+                <div class="stat-card stat-purple">
+                    <span class="stat-icon">🚀</span>
+                    <div class="stat-info">
+                        <span class="stat-number" id="statProjects">0</span>
+                        <span class="stat-label">Projects</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-blue">
+                    <span class="stat-icon">⚡</span>
+                    <div class="stat-info">
+                        <span class="stat-number" id="statSkills">0</span>
+                        <span class="stat-label">Skills</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-green">
+                    <span class="stat-icon">🎓</span>
+                    <div class="stat-info">
+                        <span class="stat-number" id="statEducation">0</span>
+                        <span class="stat-label">Education</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-orange">
+                    <span class="stat-icon">✉️</span>
+                    <div class="stat-info">
+                        <span class="stat-number" id="statMessages">0</span>
+                        <span class="stat-label">Messages</span>
+                    </div>
+                </div>
+            </div>
+            <div class="recent-messages-panel">
+                <h2>Recent Messages</h2>
+                <div id="recentMessages" class="recent-messages-list">
+                    <p class="empty-state">Loading...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects Tab -->
+        <div class="tab-content" id="tab-projects">
+            <div class="tab-header">
+                <h1 class="page-title">Projects</h1>
+                <button class="btn btn-primary" id="addProjectBtn">+ Add Project</button>
+            </div>
+            <!-- Project Form (hidden by default) -->
+            <div class="form-card hidden" id="projectForm">
+                <h3 id="projectFormTitle">Add Project</h3>
+                <input type="hidden" id="projectId">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" id="projectTitle" placeholder="Project name">
+                    </div>
+                    <div class="form-group">
+                        <label>Icon (emoji)</label>
+                        <input type="text" id="projectIcon" placeholder="🛒" maxlength="4">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Description</label>
+                        <textarea id="projectDesc" rows="3" placeholder="Brief description..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Tags (comma separated)</label>
+                        <input type="text" id="projectTags" placeholder="HTML,CSS,JS">
+                    </div>
+                    <div class="form-group">
+                        <label>Gradient</label>
+                        <select id="projectGradient">
+                            <option value="linear-gradient(135deg, #667eea, #764ba2)">Purple</option>
+                            <option value="linear-gradient(135deg, #f093fb, #f5576c)">Pink</option>
+                            <option value="linear-gradient(135deg, #4facfe, #00f2fe)">Blue</option>
+                            <option value="linear-gradient(135deg, #43e97b, #38f9d7)">Green</option>
+                            <option value="linear-gradient(135deg, #fa709a, #fee140)">Sunset</option>
+                            <option value="linear-gradient(135deg, #a18cd1, #fbc2eb)">Lavender</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-primary" id="saveProjectBtn">Save</button>
+                    <button class="btn btn-outline" id="cancelProjectBtn">Cancel</button>
+                </div>
+            </div>
+            <div id="projectsList" class="items-list">
+                <p class="empty-state">Loading...</p>
+            </div>
+        </div>
+
+        <!-- Skills Tab -->
+        <div class="tab-content" id="tab-skills">
+            <div class="tab-header">
+                <h1 class="page-title">Skills</h1>
+            </div>
+            <div class="inline-add-form">
+                <input type="text" id="skillName" placeholder="Skill name (e.g. React)">
+                <button class="btn btn-primary" id="addSkillBtn">+ Add</button>
+            </div>
+            <div id="skillsList" class="tags-list">
+                <p class="empty-state">Loading...</p>
+            </div>
+        </div>
+
+        <!-- Education Tab -->
+        <div class="tab-content" id="tab-education">
+            <div class="tab-header">
+                <h1 class="page-title">Education</h1>
+                <button class="btn btn-primary" id="addEducationBtn">+ Add</button>
+            </div>
+            <div class="form-card hidden" id="educationForm">
+                <h3 id="eduFormTitle">Add Education</h3>
+                <input type="hidden" id="eduId">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Year Range</label>
+                        <input type="text" id="eduYear" placeholder="2023 – Present">
+                    </div>
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" id="eduTitle" placeholder="BCA – Bachelor of...">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Institution</label>
+                        <input type="text" id="eduInstitution" placeholder="University name">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-primary" id="saveEduBtn">Save</button>
+                    <button class="btn btn-outline" id="cancelEduBtn">Cancel</button>
+                </div>
+            </div>
+            <div id="educationList" class="items-list">
+                <p class="empty-state">Loading...</p>
+            </div>
+        </div>
+
+        <!-- Messages Tab -->
+        <div class="tab-content" id="tab-messages">
+            <h1 class="page-title">Messages</h1>
+            <div id="messagesList" class="items-list">
+                <p class="empty-state">Loading...</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="admin.js"></script>
+</body>
+
+</html>
