@@ -1,0 +1,32 @@
+name: Node.js CI
+
+# This pipeline runs every time you Push or make a Pull Request to the main branch
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Check out your repository code
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # 2. Set up Node.js environment
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x' # Using modern Node.js version
+        cache: 'npm'
+
+    # 3. Install packages (cors, dotenv, express, mysql2)
+    - name: Install dependencies
+      run: npm install
+
+    # (Optional) If you add tests in the future, you could uncomment the following line:
+    # - name: Run tests
+    #   run: npm test
